@@ -33,7 +33,7 @@ class TodoScreen extends React.Component {
           <>
             <Navbar title = {'TODO'}/>
             <View style={{flex:1}}>
-            <ScrollView>
+            <ScrollView style={{marginBottom: 100}}>
                 {notes}
             </ScrollView>
             <AddButton onPress={this.addNote.bind(this)}/>
@@ -65,5 +65,7 @@ class TodoScreen extends React.Component {
         this.setState({noteArray: this.state.noteArray})
     }
 }
+
+
 
 export default TodoScreen;
