@@ -32,10 +32,11 @@ class PostScreen extends React.Component {
         <>
         <Navbar title={'POST'}/>
         <FlatList
-        data={this.state.data}
-        renderItem={({item})=>
-        <Post title={item.title} desc={item.body}/>
-        }
+          data={this.state.data}
+          renderItem={({item})=>
+          <Post title={item.title} desc={item.body}/>
+          }
+          keyExtractor={(item) => item.id.toString()} 
         />
         <AddButton onPress={this.openModal.bind(this)}/>
         <Modal ref={"Modal"} style={style.modalContainer} position='center'
