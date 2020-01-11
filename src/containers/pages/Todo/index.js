@@ -66,9 +66,9 @@ class TodoScreen extends React.Component {
         if(this.state.noteText){
         var d = new Date();
         this.state.noteArray.push({
-            'date': d.getFullYear() +
+            'date':  d.getDate()+
                     "/" + (d.getMonth()+1) + 
-                    "/" + d.getDate(),
+                    "/" + d.getFullYear(),
             'note': this.state.noteText,
             'checked': false
         });
@@ -82,10 +82,15 @@ class TodoScreen extends React.Component {
     }
 
     deleteNote(key){
+        const checkCopy = {...this.state.checked};
+        checkCopy[key] = false;
         this.state.noteArray.splice(key, 1);
         this.setState({
-            noteArray: this.state.noteArray
-        },() => AsyncStorage.setItem('dt', JSON.stringify(this.state.noteArray)));
+            noteArray: this.state.noteArray,
+            checked: checkCopy 
+        },() => AsyncStorage.setItem('dt', JSON.stringify(this.state.noteArray)),
+        () => AsyncStorage.setItem('checked', JSON.stringify(this.state.checked))
+        );
     }
 
     check = (key) => {
