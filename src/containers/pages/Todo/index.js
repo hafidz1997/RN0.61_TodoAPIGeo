@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Navbar from '../../../component/atom/navbar';
 import AddButton from '../../../component/atom/addButton';
 import Todo from '../../../component/atom/todo';
@@ -19,14 +20,31 @@ class TodoScreen extends React.Component {
         this.state = {
             noteArray: [],
             noteText: '',
+            checked: {}
         }
+    }
+
+    async componentDidMount() {
+        const noteArray = await AsyncStorage.getItem('dt');
+        if (noteArray !== '') {
+            this.setState({noteArray: JSON.parse(noteArray) || []});
+        }
+        const checked = await AsyncStorage.getItem('checked');
+        this.setState({checked: JSON.parse(checked) || []});
+
     }
 
     render() {
         
         let notes = this.state.noteArray.map((val, key)=>{
-            return <Todo key={key} keyval={key} val={val}
-                    deleteMethod={()=>this.deleteNote(key)}/>
+            return <Todo 
+                    key={key} 
+                    keyval={key} 
+                    val={val}
+                    valChecked={this.state.checked[key]}
+                    onChange= {() => this.check(key) }
+                    deleteMethod={()=>this.deleteNote(key)}
+                    />
         })
         
       return (
@@ -49,12 +67,15 @@ class TodoScreen extends React.Component {
         var d = new Date();
         this.state.noteArray.push({
             'date': d.getFullYear() +
-            "/" + (d.getMonth()+1) + 
-            "/" + d.getDate(),
-            'note': this.state.noteText
-        })
-        this.setState({noteArray: this.state.noteArray})
-        this.setState({noteText: ''})
+                    "/" + (d.getMonth()+1) + 
+                    "/" + d.getDate(),
+            'note': this.state.noteText,
+            'checked': false
+        });
+        this.setState({
+            noteArray: this.state.noteArray,
+            noteText: ''
+        },() => AsyncStorage.setItem('dt', JSON.stringify(this.state.noteArray)));
         }else{
             alert('masukkan todo');
         }
@@ -62,8 +83,20 @@ class TodoScreen extends React.Component {
 
     deleteNote(key){
         this.state.noteArray.splice(key, 1);
-        this.setState({noteArray: this.state.noteArray})
+        this.setState({
+            noteArray: this.state.noteArray
+        },() => AsyncStorage.setItem('dt', JSON.stringify(this.state.noteArray)));
     }
+
+    check = (key) => {
+        const checkCopy = {...this.state.checked}
+        if (checkCopy[key]) checkCopy[key] = false;
+        else checkCopy[key] = true;
+        this.setState({ 
+            checked: checkCopy 
+        },() => AsyncStorage.setItem('checked', JSON.stringify(this.state.checked)));
+    }
+
 }
 
 

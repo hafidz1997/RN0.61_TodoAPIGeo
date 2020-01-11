@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const style = StyleSheet.create({
@@ -16,7 +17,8 @@ const style = StyleSheet.create({
         margin: 10
     },
     text: {
-        justifyContent: 'space-between'
+        flex: 1, 
+        flexDirection: 'row'
     },
     date: {
         color: 'black',
@@ -35,8 +37,14 @@ const Todo = (props) => {
     return(
         <View style={style.todo} key={props.keyval}>
             <View style={style.text}>
+            <CheckBox 
+            value={props.valChecked}
+            onChange={props.onChange}
+            />
+            <View>
             <Text style={style.date}>{props.val.date}</Text>
             <Text style={style.date}>{props.val.note}</Text>
+            </View>
             </View>
             <TouchableOpacity onPress={props.deleteMethod} style={style.delete}>
                 <Ionicons name='md-trash' size={20} color='white' />
